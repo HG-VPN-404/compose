@@ -7,9 +7,12 @@ import android.os.Environment
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+// --- BAGIAN IMPORT INI YANG DIPERBAIKI ---
+import androidx.compose.foundation.shape.RoundedCornerShape // <--- INI YANG HILANG TADI
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.items 
+// -----------------------------------------
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -58,7 +61,7 @@ fun HomeScreenContent(
         containerColor = Color.Black,
         topBar = {
             TopAppBar(
-                title = { Text("TeraStream", color = Color(0xFFE50914), style = MaterialTheme.typography.headlineMedium) }, // Netflix Red
+                title = { Text("TeraStream", color = Color(0xFFE50914), style = MaterialTheme.typography.headlineMedium) },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Black)
             )
         }
@@ -86,13 +89,13 @@ fun HomeScreenContent(
                         focusedBorderColor = Color.Red,
                         unfocusedBorderColor = Color.DarkGray
                     ),
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(8.dp) // Error sebelumnya ada di sini
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Button(
                     onClick = onSubmit,
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE50914)),
-                    shape = RoundedCornerShape(8.dp),
+                    shape = RoundedCornerShape(8.dp), // Dan di sini
                     modifier = Modifier.height(56.dp)
                 ) {
                     Text("GO", style = MaterialTheme.typography.titleMedium)
@@ -119,7 +122,6 @@ fun HomeScreenContent(
                     }
                 }
                 is UiState.Success -> {
-                    // GRID LAYOUT (2 Kolom)
                     LazyVerticalGrid(
                         columns = GridCells.Fixed(2),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -146,7 +148,6 @@ fun HomeScreenContent(
     }
 }
 
-// Player Screen tetap sama, hanya memastikan null safety
 @Composable
 fun PlayerScreen(videoItem: TeraFileItem, onBack: () -> Unit) {
     val context = LocalContext.current
