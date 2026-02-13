@@ -48,4 +48,21 @@ dependencies {
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
+    
+    // Retrofit & OkHttp (API)
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.11.0")
+
+    // Coil (Image Loading)
+    implementation("io.coil-kt:coil-compose:2.5.0")
+
+    // Media3 / ExoPlayer (Streaming)
+    implementation("androidx.media3:media3-exoplayer:1.2.1")
+    implementation("androidx.media3:media3-ui:1.2.1")
+    implementation("androidx.media3:media3-common:1.2.1")
+
+    // Lifecycle & ViewModel
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    implementation("androidx.compose.material:material-icons-extended:1.6.0") // Optional icons
 }
