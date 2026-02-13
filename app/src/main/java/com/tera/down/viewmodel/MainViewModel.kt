@@ -4,10 +4,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tera.down.data.api.ApiClient
 import com.tera.down.domain.model.TeraFileItem
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 sealed class UiState {
     object Idle : UiState()
@@ -20,26 +22,31 @@ class MainViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<UiState>(UiState.Idle)
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
-    // Default URL untuk testing (sesuai prompt)
+    // URL default sesuai request
     var urlInput = MutableStateFlow("https://1024terabox.com/s/1MQm0fOGj-nhdzEZ8wqn3qw")
 
     fun fetchFiles() {
         val currentUrl = urlInput.value
         if (currentUrl.isBlank()) return
 
-        viewModelScope.launch {
-            _uiState.value = UiState.Loading
+        _uiState.value = UiState.Loading
+        
+        viewModelScope.launch(Dispatchers.IO) { // Jalankan di IO Thread agar tidak freeze UI
             try {
                 val response = ApiClient.service.getFiles(currentUrl)
-                if (response.ok && response.data?.list != null) {
-                    // Filter hanya video atau folder, sesuaikan kebutuhan. 
-                    // Di sini kita ambil semua tapi nanti di UI dibedakan.
-                    _uiState.value = UiState.Success(response.data.list)
-                } else {
-                    _uiState.value = UiState.Error("Gagal memuat data atau folder kosong.")
+                withContext(Dispatchers.Main) {
+                    if (response.ok && !response.data?.list.isNullOrEmpty()) {
+                        _uiState.value = UiState.Success(response.data!!.list!!)
+                    } else {
+                        _uiState.value = UiState.Error("Folder kosong atau URL salah.")
+                    }
                 }
             } catch (e: Exception) {
-                _uiState.value = UiState.Error("Error: ${e.localizedMessage}")
+                withContext(Dispatchers.Main) {
+                    // Log error untuk debugging dan tampilkan ke user
+                    e.printStackTrace()
+                    _uiState.value = UiState.Error("Gagal: ${e.message ?: "Unknown Error"}")
+                }
             }
         }
     }

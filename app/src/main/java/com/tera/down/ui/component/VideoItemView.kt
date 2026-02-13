@@ -9,7 +9,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Folder
-import androidx.compose.material.icons.filled.PlayCircle
+import androidx.compose.material.icons.filled.PlayCircleOutline
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,54 +29,52 @@ fun VideoItemView(
 ) {
     Column(
         modifier = Modifier
-            .width(140.dp)
-            .padding(8.dp)
+            .fillMaxWidth()
+            .padding(4.dp)
             .clickable { onClick() }
     ) {
+        // Poster Container (Aspect Ratio 2:3 typical for movies)
         Box(
             modifier = Modifier
-                .height(200.dp)
+                .aspectRatio(0.67f) // 2:3 ratio
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(8.dp))
-                .background(Color.DarkGray)
+                .background(Color(0xFF222222)) // Dark Gray bg
         ) {
-            if (item.category == "video" && !item.thumb.isNullOrEmpty()) {
+            if (!item.thumb.isNullOrEmpty()) {
                 AsyncImage(
                     model = item.thumb,
                     contentDescription = item.filename,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier.fillMaxSize()
                 )
-                // Overlay Play Icon
-                Icon(
-                    imageVector = Icons.Default.PlayCircle,
-                    contentDescription = null,
-                    tint = Color.White.copy(alpha = 0.8f),
-                    modifier = Modifier.align(Alignment.Center).size(48.dp)
-                )
-            } else {
-                // Placeholder untuk Folder atau No Image
-                Icon(
-                    imageVector = if (item.category == "folder") Icons.Default.Folder else Icons.Default.PlayCircle,
-                    contentDescription = null,
-                    tint = Color.Gray,
-                    modifier = Modifier.align(Alignment.Center).size(48.dp)
-                )
             }
+            
+            // Icon Overlay
+            Icon(
+                imageVector = if (item.category == "folder") Icons.Default.Folder else Icons.Default.PlayCircleOutline,
+                contentDescription = null,
+                tint = Color.White.copy(alpha = 0.7f),
+                modifier = Modifier
+                    .align(Alignment.Center)
+                    .size(48.dp)
+            )
         }
         
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(6.dp))
         
+        // Judul File
         Text(
-            text = item.filename,
+            text = item.filename ?: "Unknown",
             style = MaterialTheme.typography.bodyMedium,
             color = Color.White,
-            maxLines = 2,
+            maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
+        // Ukuran File
         Text(
-            text = item.sizeFmt,
-            style = MaterialTheme.typography.bodySmall,
+            text = item.sizeFmt ?: "",
+            style = MaterialTheme.typography.labelSmall,
             color = Color.Gray,
             fontSize = 10.sp
         )

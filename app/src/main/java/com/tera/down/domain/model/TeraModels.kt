@@ -13,14 +13,16 @@ data class TeraData(
 )
 
 data class TeraFileItem(
-    @SerializedName("fs_id") val fsId: String,
-    val filename: String,
-    val category: String, // "folder" or "video"
-    @SerializedName("size_fmt") val sizeFmt: String,
+    // API kadang kirim String kadang Number, kita pakai String aman
+    @SerializedName("fs_id") val fsId: String?, 
+    val filename: String?,
+    val category: String?, 
+    @SerializedName("size_fmt") val sizeFmt: String?,
     val thumb: String?,
     val links: TeraLinks?
 )
 
 data class TeraLinks(
-    val proxy: String? // URL untuk streaming/download
+    val proxy: String?,
+    val original: String?
 )
